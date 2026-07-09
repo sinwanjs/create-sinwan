@@ -1,0 +1,20 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot server/index.ts",
+    "start": "NODE_ENV=production bun server/index.ts",
+    "build": "bun run build.ts"
+  },
+  "dependencies": {
+    "sinwan": "{{SINWAN_VERSION}}"
+  },
+  "devDependencies": {
+    "bun-plugin-sinwan": "{{BUN_PLUGIN_SINWAN_VERSION}}",
+    "bun-plugin-tailwind": "{{BUN_PLUGIN_TAILWIND_VERSION}}",
+    "tailwindcss": "{{TAILWINDCSS_VERSION}}",
+    "@types/bun": "{{TYPES_BUN_VERSION}}"
+  }
+}

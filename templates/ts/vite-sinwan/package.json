@@ -1,0 +1,20 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "sinwan": "{{SINWAN_VERSION}}"
+  },
+  "devDependencies": {
+    "@types/node": "{{TYPES_NODE_VERSION}}",
+    "typescript": "{{TYPESCRIPT_VERSION}}",
+    "vite": "{{VITE_VERSION}}",
+    "vite-plugin-sinwan": "{{VITE_PLUGIN_SINWAN_VERSION}}"
+  }
+}
