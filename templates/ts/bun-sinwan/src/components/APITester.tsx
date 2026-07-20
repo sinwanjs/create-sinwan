@@ -1,4 +1,4 @@
-import { useRef } from "sinwan/react-client";
+import { useRef } from "sinwan/react";
 
 export function APITester() {
   const responseInputRef = useRef<HTMLTextAreaElement>(null);

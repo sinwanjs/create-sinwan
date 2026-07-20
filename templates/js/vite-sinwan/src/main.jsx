@@ -1,6 +1,6 @@
 import "./index.css";
 import App from "./App.jsx";
-import { createRoot, StrictMode } from "sinwan/react-client";
+import { createRoot, StrictMode } from "sinwan/react";
 
 // Reuse the root across HMR updates so the ComponentInstance (and its
 // hook_slots / signal_slots) survives — this is what preserves state.

@@ -1,4 +1,4 @@
-import { useState } from "sinwan/react-client";
+import { useState } from "sinwan/react";
 import { APITester } from "./components/APITester";
 import "./index.css";
 
@@ -36,7 +36,7 @@ export function App() {
           onclick={() => setAppCount((c) => c + 1)}
           class="bg-[#fbf0df] text-[#1a1a1a] px-5 py-2 rounded-lg font-bold hover:bg-[#f3d5a3] transition-all cursor-pointer"
         >
-          App count (useState): {appCount}
+          App count (useState): {appCount()}
         </button>
       </div>
       <APITester />

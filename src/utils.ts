@@ -13,8 +13,7 @@ export const TEMPLATES: Record<
   },
   "vite-sinwan": {
     label: "Vite + Sinwan",
-    description:
-      "Vite bundler with vite-plugin-sinwan and tailwind CSS",
+    description: "Vite bundler with vite-plugin-sinwan and tailwind CSS",
   },
 };
 

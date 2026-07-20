@@ -1,4 +1,4 @@
-import { useState } from "sinwan/react-client";
+import { useState } from "sinwan/react";
 import { signal } from "sinwan/reactivity";
 import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
