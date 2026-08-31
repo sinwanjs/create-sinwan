@@ -1,3 +1,6 @@
+# Sinwan compiler cache
+.sinwan/
+
 # Logs
 logs
 *.log
