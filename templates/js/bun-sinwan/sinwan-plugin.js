@@ -17,7 +17,6 @@ export default sinwan({
   // Incremental cross-file analysis for dev/HMR
   cache: {
     root: process.cwd(),
-    tsConfigPath: "./tsconfig.json",
     cachePath: "./.sinwan/cache.json",
     bunfigPath: "./bunfig.toml",
   },
