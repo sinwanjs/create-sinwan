@@ -80,8 +80,12 @@ export function isValidLanguage(value: string): value is Language {
 }
 
 export function getPackageManagersForTemplate(
-  _template: Template,
+  template: Template,
 ): PackageManager[] {
+  // The Bun template is built around bun.build() and bun-plugin-sinwan, so
+  // bun is the only supported package manager. Vite is bundler-agnostic and
+  // works with any package manager.
+  if (template === "bun-sinwan") return ["bun"];
   return ["bun", "pnpm", "npm", "yarn"];
 }
 

@@ -7,6 +7,8 @@ import {
   replacePlaceholders,
   toValidPackageName,
   isValidPackageName,
+  getPackageManagersForTemplate,
+  defaultPackageManagerForTemplate,
 } from "../src/utils.ts";
 import {
   getPackageManagerInfo,
@@ -39,6 +41,24 @@ describe("utils", () => {
     expect(isValidLanguage("ts")).toBe(true);
     expect(isValidLanguage("js")).toBe(true);
     expect(isValidLanguage("rust")).toBe(false);
+  });
+
+  it("restricts the Bun template to bun only", () => {
+    expect(getPackageManagersForTemplate("bun-sinwan")).toEqual(["bun"]);
+  });
+
+  it("allows all package managers for the Vite template", () => {
+    expect(getPackageManagersForTemplate("vite-sinwan")).toEqual([
+      "bun",
+      "pnpm",
+      "npm",
+      "yarn",
+    ]);
+  });
+
+  it("defaults to bun for both templates", () => {
+    expect(defaultPackageManagerForTemplate("bun-sinwan")).toBe("bun");
+    expect(defaultPackageManagerForTemplate("vite-sinwan")).toBe("bun");
   });
 });
 

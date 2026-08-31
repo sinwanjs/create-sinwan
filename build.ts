@@ -29,4 +29,19 @@ const bundledPath = path.join(outdir, "index.js");
 const entryPath = path.join(outdir, "cli.js");
 await rename(bundledPath, entryPath);
 
+// Rename the linked sourcemap to match and fix the sourceMappingURL comment.
+const mapPath = path.join(outdir, "index.js.map");
+const newMapPath = path.join(outdir, "cli.js.map");
+try {
+  await rename(mapPath, newMapPath);
+  let content = await Bun.file(entryPath).text();
+  content = content.replace(
+    "sourceMappingURL=index.js.map",
+    "sourceMappingURL=cli.js.map",
+  );
+  await Bun.write(entryPath, content);
+} catch {
+  // No sourcemap file — nothing to rename.
+}
+
 console.log("✅ Built dist/cli.js");

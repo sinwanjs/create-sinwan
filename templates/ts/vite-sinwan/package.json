@@ -12,6 +12,8 @@
     "sinwan": "{{SINWAN_VERSION}}"
   },
   "devDependencies": {
+    "tailwindcss": "{{TAILWINDCSS_VERSION}}",
+    "@tailwindcss/vite": "{{TAILWINDCSS_VITE_VERSION}}",
     "@types/node": "{{TYPES_NODE_VERSION}}",
     "typescript": "{{TYPESCRIPT_VERSION}}",
     "vite": "{{VITE_VERSION}}",

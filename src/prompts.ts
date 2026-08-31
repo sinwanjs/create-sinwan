@@ -133,7 +133,7 @@ export async function runPrompts(args: CliArgs): Promise<CreateOptions> {
     if (allowedManagers.includes(args.packageManager)) {
       packageManager = args.packageManager;
     }
-  } else {
+  } else if (allowedManagers.length > 1) {
     const managerChoice = handleCancel(
       await p.select({
         message: "Select a package manager:",
@@ -146,6 +146,10 @@ export async function runPrompts(args: CliArgs): Promise<CreateOptions> {
       }),
     );
     packageManager = managerChoice;
+  } else {
+    // Only one package manager is supported for this template (e.g. bun for
+    // the Bun template) — skip the prompt and use it directly.
+    packageManager = allowedManagers[0]!;
   }
 
   const skipInstall = args.skipInstall ?? false;
