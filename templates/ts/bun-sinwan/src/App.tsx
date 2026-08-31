@@ -14,7 +14,7 @@ export function App() {
         <img
           src={logo}
           alt="Bun Logo"
-          class="h-24 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#646cffaa] scale-120"
+          class="h-24 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#646cffaa] scale-125"
         />
         <img
           src={sinwan}
@@ -22,7 +22,6 @@ export function App() {
           class="h-28 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#61dafbaa] animate-[spin_20s_linear_infinite]"
         />
       </div>
-      <link rel="stylesheet" href="" />
       <h1 class="text-5xl font-bold my-4 leading-tight">Bun + Sinwan HMR</h1>
       <p>
         Edit{" "}

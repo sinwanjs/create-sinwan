@@ -1,5 +1,4 @@
 import { $ } from "bun";
-import { existsSync } from "node:fs";
 import type { PackageManager, PackageManagerInfo } from "./types.ts";
 
 const MANAGER_INFO: Record<PackageManager, PackageManagerInfo> = {
@@ -54,7 +53,7 @@ export async function installDependencies(
   const info = MANAGER_INFO[manager];
   const command = `${info.installCommand} ${info.installArgs.join(" ")}`;
 
-  if (!isPackageManagerAvailable(manager)) {
+  if (!(await isPackageManagerAvailable(manager))) {
     return {
       success: false,
       command,
