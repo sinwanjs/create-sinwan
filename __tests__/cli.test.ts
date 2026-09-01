@@ -104,6 +104,8 @@ describe("scaffoldProject", () => {
     expect(existsSync(path.join(tmpDir, "src", "App.tsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "main.tsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "bunfig.toml"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "_gitignore"))).toBe(false);
 
     const pkg = JSON.parse(
       readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
@@ -132,6 +134,8 @@ describe("scaffoldProject", () => {
     expect(existsSync(path.join(tmpDir, "src", "App.jsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "main.jsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "build.js"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "_gitignore"))).toBe(false);
     expect(existsSync(path.join(tmpDir, "tsconfig.json"))).toBe(false);
 
     const pkg = JSON.parse(
@@ -160,6 +164,8 @@ describe("scaffoldProject", () => {
     expect(existsSync(path.join(tmpDir, "vite.config.ts"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "index.html"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "main.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "_gitignore"))).toBe(false);
 
     const pkg = JSON.parse(
       readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
@@ -188,6 +194,8 @@ describe("scaffoldProject", () => {
     expect(existsSync(path.join(tmpDir, "index.html"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "main.jsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "App.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "_gitignore"))).toBe(false);
     expect(existsSync(path.join(tmpDir, "tsconfig.json"))).toBe(false);
 
     const pkg = JSON.parse(

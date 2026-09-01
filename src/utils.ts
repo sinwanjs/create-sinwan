@@ -1,6 +1,36 @@
 import { exists, readdir, stat } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
 import type { Language, PackageManager, Template } from "./types.ts";
+
+/**
+ * Runs a command asynchronously in a Node-compatible way (replaces Bun's `$`
+ * shell tag template, which is not available when the bundled CLI runs under
+ * Node via `npx`/`npm create`).
+ */
+export function runCommand(
+  command: string,
+  args: string[],
+  options: { cwd?: string } = {},
+): Promise<{ success: boolean; error?: string }> {
+  return new Promise((resolve) => {
+    const child = spawn(command, args, {
+      cwd: options.cwd,
+      stdio: "ignore",
+      shell: process.platform === "win32",
+    });
+    child.on("error", (err) => resolve({ success: false, error: err.message }));
+    child.on("close", (code) => {
+      if (code === 0) resolve({ success: true });
+      else
+        resolve({
+          success: false,
+          error: `${command} exited with code ${code}`,
+        });
+    });
+  });
+}
 
 export const TEMPLATES: Record<
   Template,
@@ -117,12 +147,10 @@ export function getTemplateDir(
   template: Template,
   language: Language = "ts",
 ): string {
-  return path.resolve(
-    import.meta.dirname ?? __dirname,
-    "../templates",
-    language,
-    template,
-  );
+  // `import.meta.dirname` is Bun/Node >= 20.11. Use `fileURLToPath` for
+  // broader Node compatibility.
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  return path.resolve(here, "../templates", language, template);
 }
 
 export function replacePlaceholders(

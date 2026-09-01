@@ -9,7 +9,10 @@ await mkdir(outdir, { recursive: true });
 const result = await Bun.build({
   entrypoints: [path.join(root, "src", "index.ts")],
   outdir,
-  target: "bun",
+  // The published CLI is invoked by `npx`/`npm create` under Node, so the
+  // bundle must be Node-compatible (no `import.meta.require`, no Bun-only
+  // built-ins). Target "node" emits a standard ESM bundle that Node can run.
+  target: "node",
   format: "esm",
   minify: true,
   sourcemap: "linked",

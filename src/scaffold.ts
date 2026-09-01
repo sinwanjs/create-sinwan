@@ -1,18 +1,11 @@
-import { $ } from "bun";
-import {
-  mkdir,
-  readFile,
-  writeFile,
-  cp,
-  readdir,
-  stat,
-} from "node:fs/promises";
+import { mkdir, readFile, writeFile, cp, readdir } from "node:fs/promises";
 import path from "node:path";
 import type { CreateOptions, TemplateFile } from "./types.ts";
 import {
   getTemplateDir,
   isTemplatedFile,
   replacePlaceholders,
+  runCommand,
 } from "./utils.ts";
 import { fetchLatestVersions, toPlaceholders } from "./versions.ts";
 
@@ -48,7 +41,13 @@ export async function writeTemplateFile(
   targetDir: string,
   placeholders: Record<string, string>,
 ): Promise<void> {
-  const targetPath = path.join(targetDir, file.relativePath);
+  // npm strips `.gitignore` files from published tarballs, so the template
+  // ships them as `_gitignore`. Restore the leading dot when scaffolding.
+  const relativePath = file.relativePath.replace(
+    /(^|\/)_gitignore$/,
+    "$1.gitignore",
+  );
+  const targetPath = path.join(targetDir, relativePath);
   await mkdir(path.dirname(targetPath), { recursive: true });
 
   if (file.isTemplate) {
@@ -82,8 +81,10 @@ export async function scaffoldProject(options: CreateOptions): Promise<void> {
 
 export async function initGit(targetDir: string): Promise<void> {
   try {
-    await $`git init`.cwd(targetDir).quiet();
-    await $`git add .`.cwd(targetDir).quiet();
+    // Git is optional; ignore failures.
+    const init = await runCommand("git", ["init"], { cwd: targetDir });
+    if (!init.success) return;
+    await runCommand("git", ["add", "."], { cwd: targetDir });
   } catch {
     // Git is optional; ignore failures.
   }

@@ -1,5 +1,5 @@
-import { $ } from "bun";
 import type { PackageManager, PackageManagerInfo } from "./types.ts";
+import { runCommand } from "./utils.ts";
 
 const MANAGER_INFO: Record<PackageManager, PackageManagerInfo> = {
   bun: {
@@ -38,12 +38,8 @@ export async function isPackageManagerAvailable(
   manager: PackageManager,
 ): Promise<boolean> {
   const info = MANAGER_INFO[manager];
-  try {
-    await $`${info.detectCommand} --version`.quiet();
-    return true;
-  } catch {
-    return false;
-  }
+  const result = await runCommand(info.detectCommand, ["--version"]);
+  return result.success;
 }
 
 export async function installDependencies(
@@ -62,8 +58,11 @@ export async function installDependencies(
   }
 
   try {
-    await $`${info.installCommand} ${info.installArgs}`.cwd(cwd);
-    return { success: true, command };
+    const result = await runCommand(info.installCommand, info.installArgs, {
+      cwd,
+    });
+    if (result.success) return { success: true, command };
+    return { success: false, command, error: result.error };
   } catch (error) {
     return {
       success: false,
