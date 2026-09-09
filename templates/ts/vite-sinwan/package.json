@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "sinwan": "{{SINWAN_VERSION}}"
+    "sinwan": "{{SINWAN_VERSION}}",
+    "sinwan-router": "{{SINWAN_ROUTER_VERSION}}"
   },
   "devDependencies": {
     "tailwindcss": "{{TAILWINDCSS_VERSION}}",

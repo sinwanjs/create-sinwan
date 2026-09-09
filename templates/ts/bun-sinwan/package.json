@@ -9,7 +9,8 @@
     "build": "bun run build.ts"
   },
   "dependencies": {
-    "sinwan": "{{SINWAN_VERSION}}"
+    "sinwan": "{{SINWAN_VERSION}}",
+    "sinwan-router": "{{SINWAN_ROUTER_VERSION}}"
   },
   "devDependencies": {
     "bun-plugin-sinwan": "{{BUN_PLUGIN_SINWAN_VERSION}}",

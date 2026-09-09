@@ -1,3 +1,29 @@
+.app-nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 16px 0;
+}
+
+.app-nav a {
+  color: var(--text-h);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--social-bg);
+}
+
+.app-nav a.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.route-view {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

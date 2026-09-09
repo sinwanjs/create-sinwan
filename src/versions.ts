@@ -2,6 +2,7 @@ const NPM_REGISTRY = "https://registry.npmjs.org";
 
 const PACKAGES = [
   "sinwan",
+  "sinwan-router",
   "bun-plugin-sinwan",
   "vite-plugin-sinwan",
   "bun-plugin-tailwind",
@@ -47,6 +48,7 @@ export function toPlaceholders(
   return {
     PROJECT_NAME: projectName,
     SINWAN_VERSION: versions["sinwan"] ?? "latest",
+    SINWAN_ROUTER_VERSION: versions["sinwan-router"] ?? "latest",
     BUN_PLUGIN_SINWAN_VERSION: versions["bun-plugin-sinwan"] ?? "latest",
     VITE_PLUGIN_SINWAN_VERSION: versions["vite-plugin-sinwan"] ?? "latest",
     BUN_PLUGIN_TAILWIND_VERSION: versions["bun-plugin-tailwind"] ?? "latest",

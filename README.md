@@ -19,7 +19,7 @@ bunx create-sinwan my-app --template bun-sinwan --language ts --package-manager 
 | `bun-sinwan`  | Bun dev server with `bun-plugin-sinwan` and Tailwind CSS powered by `bun.build()` |
 | `vite-sinwan` | Vite bundler with `vite-plugin-sinwan` and Tailwind CSS                           |
 
-Each template is available in **TypeScript** (`ts`) and **JavaScript** (`js`).
+Each template is available in **TypeScript** (`ts`) and **JavaScript** (`js`). The demo app includes `sinwan-router` with Home, About, and Contact pages.
 
 ### TypeScript vs JavaScript
 

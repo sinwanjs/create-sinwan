@@ -102,6 +102,11 @@ describe("scaffoldProject", () => {
 
     expect(existsSync(path.join(tmpDir, "package.json"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "App.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Home.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "About.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Contact.tsx"))).toBe(
+      true,
+    );
     expect(existsSync(path.join(tmpDir, "src", "main.tsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "bunfig.toml"))).toBe(true);
     expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
@@ -112,6 +117,7 @@ describe("scaffoldProject", () => {
     );
     expect(pkg.name).toBe(path.basename(tmpDir));
     expect(pkg.dependencies.sinwan).toMatch(/^\^\d+/);
+    expect(pkg.dependencies["sinwan-router"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["bun-plugin-sinwan"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["@types/bun"]).toMatch(/^\^\d+/);
   });
@@ -132,6 +138,11 @@ describe("scaffoldProject", () => {
 
     expect(existsSync(path.join(tmpDir, "package.json"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "App.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Home.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "About.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Contact.jsx"))).toBe(
+      true,
+    );
     expect(existsSync(path.join(tmpDir, "src", "main.jsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "build.js"))).toBe(true);
     expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
@@ -142,6 +153,7 @@ describe("scaffoldProject", () => {
       readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
     );
     expect(pkg.dependencies.sinwan).toMatch(/^\^\d+/);
+    expect(pkg.dependencies["sinwan-router"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["bun-plugin-sinwan"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["@types/bun"]).toBeUndefined();
   });
@@ -164,6 +176,11 @@ describe("scaffoldProject", () => {
     expect(existsSync(path.join(tmpDir, "vite.config.ts"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "index.html"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "main.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Home.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "About.tsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Contact.tsx"))).toBe(
+      true,
+    );
     expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "_gitignore"))).toBe(false);
 
@@ -171,6 +188,7 @@ describe("scaffoldProject", () => {
       readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
     );
     expect(pkg.dependencies.sinwan).toMatch(/^\^\d+/);
+    expect(pkg.dependencies["sinwan-router"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["vite-plugin-sinwan"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["typescript"]).toMatch(/^\^\d+/);
   });
@@ -194,6 +212,11 @@ describe("scaffoldProject", () => {
     expect(existsSync(path.join(tmpDir, "index.html"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "main.jsx"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "src", "App.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Home.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "About.jsx"))).toBe(true);
+    expect(existsSync(path.join(tmpDir, "src", "pages", "Contact.jsx"))).toBe(
+      true,
+    );
     expect(existsSync(path.join(tmpDir, ".gitignore"))).toBe(true);
     expect(existsSync(path.join(tmpDir, "_gitignore"))).toBe(false);
     expect(existsSync(path.join(tmpDir, "tsconfig.json"))).toBe(false);
@@ -202,6 +225,7 @@ describe("scaffoldProject", () => {
       readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
     );
     expect(pkg.dependencies.sinwan).toMatch(/^\^\d+/);
+    expect(pkg.dependencies["sinwan-router"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["vite-plugin-sinwan"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["@tailwindcss/vite"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["typescript"]).toBeUndefined();

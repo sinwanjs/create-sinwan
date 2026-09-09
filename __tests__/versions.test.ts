@@ -5,6 +5,7 @@ describe("toPlaceholders", () => {
   it("maps all package versions to placeholder keys", () => {
     const versions = {
       sinwan: "^1.2.5",
+      "sinwan-router": "^1.0.0",
       "bun-plugin-sinwan": "^0.1.1",
       "vite-plugin-sinwan": "^0.1.1",
       "bun-plugin-tailwind": "^0.1.2",
@@ -20,6 +21,7 @@ describe("toPlaceholders", () => {
 
     expect(ph.PROJECT_NAME).toBe("my-app");
     expect(ph.SINWAN_VERSION).toBe("^1.2.5");
+    expect(ph.SINWAN_ROUTER_VERSION).toBe("^1.0.0");
     expect(ph.BUN_PLUGIN_SINWAN_VERSION).toBe("^0.1.1");
     expect(ph.VITE_PLUGIN_SINWAN_VERSION).toBe("^0.1.1");
     expect(ph.BUN_PLUGIN_TAILWIND_VERSION).toBe("^0.1.2");
@@ -36,6 +38,7 @@ describe("toPlaceholders", () => {
 
     expect(ph.PROJECT_NAME).toBe("test-app");
     expect(ph.SINWAN_VERSION).toBe("latest");
+    expect(ph.SINWAN_ROUTER_VERSION).toBe("latest");
     expect(ph.VITE_VERSION).toBe("latest");
     expect(ph.TYPESCRIPT_VERSION).toBe("latest");
   });
@@ -60,6 +63,7 @@ describe("fetchLatestVersions", () => {
 
     const expectedPackages = [
       "sinwan",
+      "sinwan-router",
       "bun-plugin-sinwan",
       "vite-plugin-sinwan",
       "bun-plugin-tailwind",

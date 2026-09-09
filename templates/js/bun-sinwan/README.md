@@ -1,5 +1,7 @@
 # bun-sinwan-tailwind-template
 
+The demo uses `sinwan-router` with Home, About, and Contact pages.
+
 To install dependencies:
 
 ```bash
