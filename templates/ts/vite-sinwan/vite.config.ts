@@ -11,14 +11,11 @@ export default defineConfig({
       hoist: true,
       // Emit explicit binding descriptors (default: false)
       explicitBindings: false,
-      // Path to reactive-props metadata from `sinwan analyze`
-      analyze: "./.sinwan/props.json",
       // Incremental cross-file analysis for dev/HMR
       cache: {
         root: process.cwd(),
-        tsConfigPath: "./tsconfig.json",
+        tsConfigPath: "./tsconfig.app.json",
         cachePath: "./.sinwan/cache.json",
-        bunfigPath: "./bunfig.toml",
       },
       // Plugin-free Fast Refresh (default: true, dev server only)
       fastRefresh: true,

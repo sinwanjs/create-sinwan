@@ -21,7 +21,9 @@ const result = await Bun.build({
 });
 
 if (!result.success) {
-  console.error(result.logs);
+  for (const log of result.logs) {
+    console.error(log);
+  }
   process.exit(1);
 }
 

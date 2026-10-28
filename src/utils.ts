@@ -1,8 +1,13 @@
-import { exists, readdir, stat } from "node:fs/promises";
+import { readdir, rm, stat } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import type { Language, PackageManager, Template } from "./types.ts";
+import type {
+  Framework,
+  Language,
+  PackageManager,
+  Template,
+} from "./types.ts";
 
 /**
  * Runs a command asynchronously in a Node-compatible way (replaces Bun's `$`
@@ -32,18 +37,39 @@ export function runCommand(
   });
 }
 
+export const FRAMEWORKS: Record<
+  Framework,
+  { label: string; description: string }
+> = {
+  sinwan: {
+    label: "Sinwan",
+    description: "Frontend app with Sinwan components and sinwan-router",
+  },
+  "sinwan-engine": {
+    label: "Sinwan Engine",
+    description: "Server app with sinwan-engine HTTP routes and modules",
+  },
+};
+
 export const TEMPLATES: Record<
   Template,
-  { label: string; description: string }
+  { label: string; description: string; framework: Framework }
 > = {
   "bun-sinwan": {
     label: "Bun + Sinwan",
     description:
       "Bun dev server with bun-plugin-sinwan and Tailwind CSS powered by bun.build()",
+    framework: "sinwan",
   },
   "vite-sinwan": {
     label: "Vite + Sinwan",
-    description: "Vite bundler with vite-plugin-sinwan and tailwind CSS",
+    description: "Vite bundler with vite-plugin-sinwan and Tailwind CSS",
+    framework: "sinwan",
+  },
+  "bun-sinwan-engine": {
+    label: "Bun + Sinwan Engine",
+    description: "Bun HTTP server with sinwan-engine, a users module and bun.build()",
+    framework: "sinwan-engine",
   },
 };
 
@@ -101,8 +127,18 @@ export function isValidTemplate(value: string): value is Template {
   return value in TEMPLATES;
 }
 
+export function isValidFramework(value: string): value is Framework {
+  return value in FRAMEWORKS;
+}
+
+export function getTemplatesForFramework(framework: Framework): Template[] {
+  return Object.keys(TEMPLATES)
+    .filter(isValidTemplate)
+    .filter((template) => TEMPLATES[template].framework === framework);
+}
+
 export function isValidPackageManager(value: string): value is PackageManager {
-  return PACKAGE_MANAGERS.includes(value as PackageManager);
+  return PACKAGE_MANAGERS.some((manager) => manager === value);
 }
 
 export function isValidLanguage(value: string): value is Language {
@@ -112,10 +148,10 @@ export function isValidLanguage(value: string): value is Language {
 export function getPackageManagersForTemplate(
   template: Template,
 ): PackageManager[] {
-  // The Bun template is built around bun.build() and bun-plugin-sinwan, so
+  // The Bun templates are built around bun.build() and the Bun runtime, so
   // bun is the only supported package manager. Vite is bundler-agnostic and
   // works with any package manager.
-  if (template === "bun-sinwan") return ["bun"];
+  if (template !== "vite-sinwan") return ["bun"];
   return ["bun", "pnpm", "npm", "yarn"];
 }
 
@@ -125,13 +161,29 @@ export function defaultPackageManagerForTemplate(
   return "bun";
 }
 
+/** A directory counts as empty when it is missing or holds only `.git`. */
 export async function isEmptyDir(dir: string): Promise<boolean> {
   try {
     const entries = await readdir(dir);
-    return entries.length === 0;
+    return entries.every((entry) => entry === ".git");
   } catch {
     return true;
   }
+}
+
+/** Removes everything in `dir` except `.git`. A missing `dir` is a no-op. */
+export async function emptyDir(dir: string): Promise<void> {
+  let entries: string[];
+  try {
+    entries = await readdir(dir);
+  } catch {
+    return;
+  }
+  await Promise.all(
+    entries
+      .filter((entry) => entry !== ".git")
+      .map((entry) => rm(path.join(dir, entry), { recursive: true, force: true })),
+  );
 }
 
 export async function canWriteDir(dir: string): Promise<boolean> {

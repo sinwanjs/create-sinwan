@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun --hot server/index.ts",
     "start": "NODE_ENV=production bun server/index.ts",
-    "build": "bun run build.ts"
+    "build": "bun run build.ts",
+    "typecheck": "bun check"
   },
   "dependencies": {
     "sinwan": "{{SINWAN_VERSION}}",
@@ -16,6 +17,7 @@
     "bun-plugin-sinwan": "{{BUN_PLUGIN_SINWAN_VERSION}}",
     "bun-plugin-tailwind": "{{BUN_PLUGIN_TAILWIND_VERSION}}",
     "tailwindcss": "{{TAILWINDCSS_VERSION}}",
-    "@types/bun": "{{TYPES_BUN_VERSION}}"
+    "@types/bun": "{{TYPES_BUN_VERSION}}",
+    "typescript": "{{TYPESCRIPT_VERSION}}"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun dist/index.js",
+    "build": "bun run build.ts",
+    "typecheck": "bun check"
+  },
+  "dependencies": {
+    "sinwan-engine": "{{SINWAN_ENGINE_VERSION}}"
+  },
+  "devDependencies": {
+    "@types/bun": "{{TYPES_BUN_VERSION}}",
+    "typescript": "{{TYPESCRIPT_VERSION}}"
+  }
+}

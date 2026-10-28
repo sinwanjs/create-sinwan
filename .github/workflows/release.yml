@@ -17,6 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check tag matches package.json version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "${GITHUB_REF_NAME#v}" != "$PKG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -65,12 +73,19 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        # Prereleases (v1.1.0-rc.1) go to the `next` dist-tag so they never
+        # become `latest`.
+        run: |
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            npm publish --provenance --access public --tag next
+          else
+            npm publish --provenance --access public
+          fi
 
   # ─── Create GitHub Release ─────────────────────────────────
   release:
     name: Create GitHub Release
-    needs: verify
+    needs: publish
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

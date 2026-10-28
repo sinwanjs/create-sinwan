@@ -1,5 +1,6 @@
 export type PackageManager = "bun" | "npm" | "pnpm" | "yarn";
-export type Template = "bun-sinwan" | "vite-sinwan";
+export type Framework = "sinwan" | "sinwan-engine";
+export type Template = "bun-sinwan" | "vite-sinwan" | "bun-sinwan-engine";
 export type Language = "ts" | "js";
 
 export interface CreateOptions {
@@ -10,6 +11,7 @@ export interface CreateOptions {
   packageManager: PackageManager;
   skipInstall: boolean;
   skipGit: boolean;
+  /** Remove the target's contents (except `.git`) before writing. */
   force: boolean;
 }
 

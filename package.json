@@ -1,6 +1,6 @@
 {
   "name": "create-sinwan",
-  "version": "0.2.4",
+  "version": "1.0.0",
   "description": "Official CLI to scaffold Sinwan projects",
   "author": "Mohammed Ben Cheikh",
   "license": "MIT",
@@ -11,32 +11,29 @@
     "url": "https://github.com/sinwanjs/create-sinwan"
   },
   "type": "module",
-  "main": "./dist/cli.js",
-  "module": "./dist/cli.js",
-  "types": "./dist/index.d.ts",
   "bin": {
     "create-sinwan": "./dist/cli.js"
   },
   "files": [
-    "dist",
-    "templates"
+    "dist/cli.js",
+    "templates",
+    "CHANGELOG.md"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "bun run src/index.ts",
     "build": "bun run build.ts",
     "test": "bun test",
     "prepublishOnly": "bun run build && bun run test"
   },
-  "dependencies": {
-    "@clack/prompts": "^0.10.0",
-    "commander": "^13.1.0",
-    "kolorist": "^1.8.0"
-  },
   "devDependencies": {
+    "@clack/prompts": "^0.10.0",
     "@types/bun": "latest",
-    "@types/node": "^22.0.0"
-  },
-  "peerDependencies": {
+    "@types/node": "^22.0.0",
+    "commander": "^13.1.0",
+    "kolorist": "^1.8.0",
     "typescript": "^5"
   },
   "keywords": [

@@ -1,41 +1,27 @@
-# Sinwan + TypeScript + Vite
+# {{PROJECT_NAME}}
 
-This template provides a minimal setup to get Sinwan working in Vite with HMR.
+A [Sinwan](https://sinwanjs.com) + TypeScript app built with Vite, [vite-plugin-sinwan](https://github.com/sinwanjs/vite-plugin-sinwan) and Tailwind CSS. The demo uses `sinwan-router` with Home, About, and Contact pages.
 
-The demo uses `sinwan-router` with Home, About, and Contact pages.
+To install dependencies (or use npm, pnpm or yarn):
 
-Currently, one official plugin is available:
+```bash
+bun install
+```
 
-- [vite-plugin-sinwan](https://github.com/sinwanjs/vite-plugin-sinwan)
+To start the dev server with hot module replacement:
 
-## Expanding the ESLint configuration
+```bash
+bun run dev
+```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+To build for production into `dist/` (type checks first with `tsc -b`):
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+```bash
+bun run build
+```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+To preview the production build locally:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+bun run preview
 ```

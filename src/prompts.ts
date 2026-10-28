@@ -3,6 +3,7 @@ import { cyan, gray, green } from "kolorist";
 import path from "node:path";
 import type {
   CreateOptions,
+  Framework,
   Language,
   PackageManager,
   Template,
@@ -10,8 +11,11 @@ import type {
 import {
   defaultPackageManagerForTemplate,
   formatTargetDir,
+  FRAMEWORKS,
   getPackageManagersForTemplate,
+  getTemplatesForFramework,
   isEmptyDir,
+  isValidFramework,
   isValidPackageName,
   isValidLanguage,
   isValidPackageManager,
@@ -21,12 +25,14 @@ import {
   toValidPackageName,
 } from "./utils.ts";
 
+function fail(message: string): never {
+  p.cancel(message);
+  return process.exit(1);
+}
+
 function handleCancel<T>(value: T | symbol): T {
-  if (p.isCancel(value)) {
-    p.cancel("Operation cancelled.");
-    process.exit(0);
-  }
-  return value as T;
+  if (p.isCancel(value)) return fail("Operation cancelled.");
+  return value;
 }
 
 export interface CliArgs {
@@ -40,11 +46,54 @@ export interface CliArgs {
   force?: boolean;
 }
 
-export async function runPrompts(args: CliArgs): Promise<CreateOptions> {
+async function selectTemplate(): Promise<Template> {
+  const framework = handleCancel(
+    await p.select<Framework>({
+      message: "Select a framework:",
+      initialValue: "sinwan",
+      options: Object.keys(FRAMEWORKS)
+        .filter(isValidFramework)
+        .map((key) => ({
+          value: key,
+          label: FRAMEWORKS[key].label,
+          hint: FRAMEWORKS[key].description,
+        })),
+    }),
+  );
+
+  const templates = getTemplatesForFramework(framework);
+  const [first] = templates;
+  if (templates.length === 1 && first) return first;
+
+  return handleCancel(
+    await p.select<Template>({
+      message: "Select a template:",
+      initialValue: first,
+      options: templates.map((key) => ({
+        value: key,
+        label: TEMPLATES[key].label,
+        hint: TEMPLATES[key].description,
+      })),
+    }),
+  );
+}
+
+/**
+ * Collects the scaffold options, asking only for what the flags leave out.
+ * Without a terminal it never asks: a missing project name or template, or a
+ * non-empty target without `--force`, exits with code 1.
+ */
+export async function runPrompts(
+  args: CliArgs,
+  interactive: boolean = Boolean(process.stdin.isTTY),
+): Promise<CreateOptions> {
   p.intro(`${green("create-sinwan")} — scaffold a new Sinwan project`);
 
   let projectName = args.projectName;
   if (!projectName) {
+    if (!interactive) {
+      fail("Pass a project name: there is no terminal to ask in.");
+    }
     projectName = handleCancel(
       await p.text({
         message: "Project name:",
@@ -58,84 +107,89 @@ export async function runPrompts(args: CliArgs): Promise<CreateOptions> {
     );
   }
 
-  const validPackageName = toValidPackageName(projectName);
   const defaultTargetDir = formatTargetDir(projectName);
-
-  const targetDir = args.targetDir
-    ? args.targetDir
-    : handleCancel(
-        await p.text({
-          message: "Target directory:",
-          placeholder: defaultTargetDir,
-          initialValue: defaultTargetDir,
-        }),
-      );
-
+  let targetDir = args.targetDir;
+  // A name given on the command line already says where the project goes.
+  if (!targetDir && !args.projectName) {
+    targetDir = handleCancel(
+      await p.text({
+        message: "Target directory:",
+        placeholder: defaultTargetDir,
+        initialValue: defaultTargetDir,
+      }),
+    );
+  }
   const resolvedTargetDir = path.resolve(targetDir || defaultTargetDir);
-  const empty = await isEmptyDir(resolvedTargetDir);
-  if (!empty && !args.force) {
-    const overwrite = handleCancel(
+
+  const packageName = toValidPackageName(
+    projectName === "." ? path.basename(resolvedTargetDir) : projectName,
+  );
+  if (!isValidPackageName(packageName)) {
+    fail(`Invalid project name: ${projectName}`);
+  }
+
+  let force = args.force ?? false;
+  if (!force && !(await isEmptyDir(resolvedTargetDir))) {
+    const dirName = cyan(path.basename(resolvedTargetDir));
+    if (!interactive) {
+      fail(
+        `Directory ${dirName} is not empty. Pass --force to remove its contents.`,
+      );
+    }
+    force = handleCancel(
       await p.confirm({
-        message: `Directory ${cyan(path.basename(resolvedTargetDir))} is not empty. Overwrite?`,
+        message: `Directory ${dirName} is not empty. Remove its contents and continue?`,
         initialValue: false,
       }),
     );
-    if (!overwrite) {
-      p.cancel("Operation cancelled.");
-      process.exit(0);
+    if (!force) fail("Operation cancelled.");
+  }
+
+  let template: Template;
+  if (args.template && isValidTemplate(args.template)) {
+    template = args.template;
+  } else {
+    if (!interactive) {
+      fail(
+        `Pass --template (${Object.keys(TEMPLATES).join(", ")}): there is no terminal to ask in.`,
+      );
     }
+    template = await selectTemplate();
   }
 
-  let template: Template =
-    args.template && isValidTemplate(args.template)
-      ? args.template
-      : "bun-sinwan";
-  if (!args.template || !isValidTemplate(args.template)) {
-    const templateChoice = handleCancel(
-      await p.select({
-        message: "Select a template:",
-        initialValue: "bun-sinwan",
-        options: Object.entries(TEMPLATES).map(
-          ([key, { label, description }]) => ({
-            value: key as Template,
-            label,
-            hint: description,
-          }),
-        ),
-      }),
-    );
-    template = templateChoice as Template;
-  }
-
-  let language: Language =
-    args.language && isValidLanguage(args.language) ? args.language : "ts";
-  if (!args.language || !isValidLanguage(args.language)) {
-    const languageChoice = handleCancel(
-      await p.select({
+  let language: Language = "ts";
+  if (args.language && isValidLanguage(args.language)) {
+    language = args.language;
+  } else if (interactive) {
+    language = handleCancel(
+      await p.select<Language>({
         message: "Select a language:",
         initialValue: "ts",
-        options: Object.entries(LANGUAGES).map(
-          ([key, { label, description }]) => ({
-            value: key as Language,
-            label,
-            hint: description,
-          }),
-        ),
+        options: Object.keys(LANGUAGES)
+          .filter(isValidLanguage)
+          .map((key) => ({
+            value: key,
+            label: LANGUAGES[key].label,
+            hint: LANGUAGES[key].description,
+          })),
       }),
     );
-    language = languageChoice as Language;
   }
 
   const allowedManagers = getPackageManagersForTemplate(template);
-  let packageManager: PackageManager =
-    defaultPackageManagerForTemplate(template);
-  if (args.packageManager && isValidPackageManager(args.packageManager)) {
-    if (allowedManagers.includes(args.packageManager)) {
-      packageManager = args.packageManager;
+  let packageManager = defaultPackageManagerForTemplate(template);
+  const requestedManager = args.packageManager;
+  if (requestedManager && isValidPackageManager(requestedManager)) {
+    if (allowedManagers.includes(requestedManager)) {
+      packageManager = requestedManager;
+    } else {
+      p.log.warn(
+        `${template} only supports ${allowedManagers.join(", ")}; using ${packageManager} instead of ${requestedManager}.`,
+      );
     }
-  } else if (allowedManagers.length > 1) {
-    const managerChoice = handleCancel(
-      await p.select({
+  } else if (interactive && allowedManagers.length > 1) {
+    packageManager = handleCancel(
+      await p.select<PackageManager>({
         message: "Select a package manager:",
         initialValue: packageManager,
         options: allowedManagers.map((m) => ({
@@ -145,29 +199,21 @@ export async function runPrompts(args: CliArgs): Promise<CreateOptions> {
         })),
       }),
     );
-    packageManager = managerChoice;
-  } else {
-    // Only one package manager is supported for this template (e.g. bun for
-    // the Bun template) — skip the prompt and use it directly.
-    packageManager = allowedManagers[0]!;
   }
-
-  const skipInstall = args.skipInstall ?? false;
-  const skipGit = args.skipGit ?? false;
 
   p.outro(
     `Scaffolding ${cyan(template)} (${cyan(language === "ts" ? "TypeScript" : "JavaScript")}) project with ${cyan(packageManager)}...`,
   );
 
   return {
-    projectName: validPackageName,
+    projectName: packageName,
     targetDir: resolvedTargetDir,
     template,
     language,
     packageManager,
-    skipInstall,
-    skipGit,
-    force: args.force ?? false,
+    skipInstall: args.skipInstall ?? false,
+    skipGit: args.skipGit ?? false,
+    force,
   };
 }
 
@@ -182,6 +228,9 @@ export function printNextSteps(
   }
   console.log("\n" + green("✔ Done."));
   console.log(gray("Next steps:"));
+  if (displayDir.includes(" ")) {
+    displayDir = `"${displayDir}"`;
+  }
   console.log(`  cd ${cyan(displayDir)}`);
   if (skipInstall) {
     console.log(`  ${cyan(`${packageManager} install`)}`);
