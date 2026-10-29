@@ -2,6 +2,15 @@
 
 All notable changes to **create-sinwan** are documented in this file. The format follows [Keep a Changelog](https://keepachangelog.com/) and create-sinwan adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-10-29
+
+### Changed
+
+- **`bun-sinwan`: `bun start` serves the production build from `dist/`** (TypeScript and JavaScript). It runs the new `server/prod.*`, which serves the `bun run build` output as static files plus the `/api` routes, so the Sinwan and Tailwind plugins no longer compile the app in memory on every start. Run `bun run build` first; without `dist/index.html` the server exits with a message. Unknown paths without a file extension return `index.html` for client-side routes, missing files return 404, and only files inside `dist/` are served (`..`, encoded `%2e%2e`, NUL and malformed escapes return 404 or 400).
+- **`bun-sinwan`: `/api/hello` routes move to `server/api.*`**, shared by the dev server (`server/index.*`, now development only) and the production server.
+- **`bun-sinwan`: `build` emits absolute asset URLs and splits lazy routes** (`publicPath: "/"`, `splitting: true`), so a deep link such as `/about/team` loads `/chunk-*.js` instead of `/about/chunk-*.js`, and `() => import(...)` routes become separate chunks.
+- **`bun-sinwan` READMEs** describe the build-then-start flow, and that static hosts must serve `index.html` for unknown paths.
+
 ## [1.0.0] - 2026-10-28
 
 First stable release. The command-line flags (`--template`, `--language`, `--package-manager`, `--target-dir`, `--skip-install`, `--skip-git`, `--force`) are now stable.

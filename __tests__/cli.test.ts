@@ -167,6 +167,10 @@ describe("scaffoldProject", () => {
     expect(pkg.dependencies["sinwan-router"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["bun-plugin-sinwan"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["@types/bun"]).toMatch(/^\^\d+/);
+    expect(pkg.scripts.start).toBe("NODE_ENV=production bun server/prod.ts");
+    for (const file of ["api.ts", "index.ts", "prod.ts"]) {
+      expect(existsSync(path.join(tmpDir, "server", file))).toBe(true);
+    }
   });
 
   it("scaffolds bun-sinwan template (JavaScript)", async () => {
@@ -209,6 +213,10 @@ describe("scaffoldProject", () => {
     expect(pkg.dependencies["sinwan-router"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["bun-plugin-sinwan"]).toMatch(/^\^\d+/);
     expect(pkg.devDependencies["@types/bun"]).toBeUndefined();
+    expect(pkg.scripts.start).toBe("NODE_ENV=production bun server/prod.js");
+    for (const file of ["api.js", "index.js", "prod.js"]) {
+      expect(existsSync(path.join(tmpDir, "server", file))).toBe(true);
+    }
   });
 
   it("scaffolds vite-sinwan template (TypeScript)", async () => {

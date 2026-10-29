@@ -1,35 +1,17 @@
 import { serve } from "bun";
 import index from "../index.html";
+import { apiRoutes } from "./api";
 
+// Development server: Bun bundles index.html through the bunfig.toml plugins
+// and hot-reloads on change. `bun start` serves the built dist/ instead.
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
-
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
-
-    "/api/hello/:name": async (req) => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
-    },
+    ...apiRoutes,
   },
 
-  development: process.env.NODE_ENV !== "production" && {
+  development: {
     // Enable browser hot reloading in development
     hmr: true,
 

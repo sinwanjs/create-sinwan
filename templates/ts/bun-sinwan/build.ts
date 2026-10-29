@@ -13,6 +13,10 @@ const result = await Bun.build({
   outdir,
   plugins: [tailwind, sinwan()],
   minify: true,
+  // Absolute asset URLs so deep links such as /about/team load /chunk-*.js.
+  publicPath: "/",
+  // Lazy routes (`() => import(...)`) become separate chunks.
+  splitting: true,
   target: "browser",
   sourcemap: "linked",
   define: {
